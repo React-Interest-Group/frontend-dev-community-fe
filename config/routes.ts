@@ -1,7 +1,7 @@
 const routes = [
   {
     path: '/',
-    component: '../layouts/index',
+    component: '../layouts/BasicLayout',
     routes: [
       {
         path: '/',
