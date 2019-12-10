@@ -10,3 +10,5 @@ rules:
   no-debugger: true
   no-reference: true
   jsx-no-multiline-js: false
+  # 关闭JSX不能使用箭头函数的warning
+  jsx-no-lambda: false
