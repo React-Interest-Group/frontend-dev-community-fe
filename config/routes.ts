@@ -5,7 +5,7 @@ const routes = [
     routes: [
       {
         path: '/',
-        component: '../pages/index',
+        redirect: '/login',
       },
       {
         path: '/login',
