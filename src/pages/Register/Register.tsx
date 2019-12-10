@@ -1,7 +1,13 @@
 import React from 'react';
+import SwitchTab from '@/components/SwitchTab/index.tsx';
 
 const Register: React.SFC = () => {
-  return <div>注册</div>;
+  return (
+    <div>
+      <SwitchTab />
+      欢迎来到注册页面
+    </div>
+  );
 };
 
 export default Register;

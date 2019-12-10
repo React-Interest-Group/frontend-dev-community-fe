@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { Dispatch } from 'redux';
 import { Form, Input, Button } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import uuid from 'uuid/v4';
 import { ConnectState } from '@/models/connect';
+import SwitchTab from '@/components/SwitchTab/index.tsx';
 
 const FormItem = Form.Item;
 
@@ -48,17 +50,20 @@ const Login = (props: ILoginProps) => {
 
   return (
     <div>
+      <SwitchTab />
       <Form>
         <FormItem label="邮箱">
           {getFieldDecorator('email', {
             rules: [{ required: true, message: '请输入邮箱' }],
           })(<Input placeholder="请输入邮箱" />)}
         </FormItem>
+
         <FormItem label="密码">
           {getFieldDecorator('password', {
             rules: [{ required: true, message: '请输入密码' }],
           })(<Input placeholder="请输入密码" />)}
         </FormItem>
+
         <FormItem label="验证码">
           {getFieldDecorator('email', {
             rules: [{ required: true, message: '请输入验证码' }],
@@ -68,6 +73,9 @@ const Login = (props: ILoginProps) => {
         <div>
           <Button type="primary" onClick={handleSumbit}>
             立即登录
+          </Button>
+          <Button type="primary" onClick={() => router.push('/forget')}>
+            忘记密码
           </Button>
         </div>
       </Form>
