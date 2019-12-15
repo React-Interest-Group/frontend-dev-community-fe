@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 import { Effect } from 'dva';
 import { message } from 'antd';
-import { fetchCaptchaAsync } from '@/services/global';
+import { fetchCaptchaAsync, createLoginAsync } from '@/services/global';
 
 export interface LoginModelState {
   svgCaptcha?: string; // 验证码
@@ -12,6 +12,7 @@ export interface LoginModelType {
   state: LoginModelState;
   effects: {
     querySvgCaptcha: Effect;
+    createLogin: Effect;
   };
   reducers: {
     setSvgCaptcha: Reducer<LoginModelState>;
@@ -27,13 +28,20 @@ const LoginModel: LoginModelType = {
     *querySvgCaptcha({ payload }, { call, put }) {
       const res = yield call(fetchCaptchaAsync, payload);
 
-      console.log('res:', res);
-
-      if (0 === res.code) {
+      if (200 === res.code) {
         yield put({
           type: 'setSvgCaptcha',
           payload: res.data,
         });
+      } else {
+        message.error(res.msg);
+      }
+    },
+    *createLogin({ payload }, { call, put }) {
+      const res = yield call(createLoginAsync, payload);
+
+      if (200 === res.code) {
+        message.success('登录成功');
       } else {
         message.error(res.msg);
       }
