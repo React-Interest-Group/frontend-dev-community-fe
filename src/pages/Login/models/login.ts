@@ -27,7 +27,6 @@ const LoginModel: LoginModelType = {
   effects: {
     *querySvgCaptcha({ payload }, { call, put }) {
       const res = yield call(fetchCaptchaAsync, payload);
-
       if (200 === res.code) {
         yield put({
           type: 'setSvgCaptcha',
@@ -39,7 +38,6 @@ const LoginModel: LoginModelType = {
     },
     *createLogin({ payload }, { call, put }) {
       const res = yield call(createLoginAsync, payload);
-
       if (200 === res.code) {
         message.success('登录成功');
       } else {

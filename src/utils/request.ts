@@ -50,7 +50,7 @@ const errorHandler = (error: { response: Response }): Response => {
  */
 const request = extend({
   errorHandler, // 默认错误处理
-  prefix: '/api',
+  prefix: 'api',
   credentials: 'include', // 默认请求是否带上cookie
 });
 
