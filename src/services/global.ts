@@ -1,7 +1,7 @@
 /**
  * Acer管理页面接口
  */
-import { stringify } from 'qs';
+// import { stringify } from 'qs';
 import request from '@/utils/request';
 
 export interface ILoginParams {
@@ -10,7 +10,13 @@ export interface ILoginParams {
   code: string;
   sid: string;
 }
-
+export interface IRegisterParams {
+  usename: string;
+  password: string;
+  code: string;
+  sid: string;
+  name: string;
+}
 /**
  * 获取验证码接口
  *
@@ -35,5 +41,18 @@ export const createLoginAsync = (params: ILoginParams) =>
     method: 'POST',
     data: {
       ...params,
+    },
+  });
+
+/**
+ * 注册接口
+ *
+ * @param {object} registerInfo 用户登录信息(邮箱、密码、验证码、UUID)
+ */
+export const createRegisterAsync = (registerInfo: IRegisterParams) =>
+  request('/login/reg', {
+    method: 'POST',
+    data: {
+      ...registerInfo,
     },
   });

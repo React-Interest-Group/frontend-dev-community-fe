@@ -1,3 +1,3 @@
-import { ILoginParams } from './global';
+import { ILoginParams, IRegisterParams } from './global';
 
-export { ILoginParams };
+export { ILoginParams, IRegisterParams };

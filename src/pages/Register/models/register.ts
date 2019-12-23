@@ -1,26 +1,26 @@
 import { Reducer } from 'redux';
 import { Effect } from 'dva';
 import { message } from 'antd';
-import { fetchCaptchaAsync, createLoginAsync } from '@/services/global';
+import { fetchCaptchaAsync, createRegisterAsync } from '@/services/global';
 
-export interface LoginModelState {
+export interface RegisterModelState {
   svgCaptcha?: string; // 验证码
 }
 
-export interface LoginModelType {
-  namespace: 'login';
-  state: LoginModelState;
+export interface RegisterModelType {
+  namespace: 'register';
+  state: RegisterModelState;
   effects: {
     querySvgCaptcha: Effect;
-    createLogin: Effect;
+    createRegister: Effect;
   };
   reducers: {
-    setSvgCaptcha: Reducer<LoginModelState>;
+    setSvgCaptcha: Reducer<RegisterModelState>;
   };
 }
 
-const LoginModel: LoginModelType = {
-  namespace: 'login',
+const RegisterModel: RegisterModelType = {
+  namespace: 'register',
   state: {
     svgCaptcha: '',
   },
@@ -36,17 +36,13 @@ const LoginModel: LoginModelType = {
         message.error(res.msg);
       }
     },
-    *createLogin({ payload }, { call, put }) {
-      const res = yield call(createLoginAsync, payload);
-      if (200 === res.code) {
-        message.success('登录成功');
-      } else {
-        message.error(res.msg);
-      }
+    *createRegister({ payload }, { call, put }) {
+      const res = yield call(createRegisterAsync, payload);
+      return res;
     },
   },
   reducers: {
-    setSvgCaptcha(state, { payload }): LoginModelState {
+    setSvgCaptcha(state, { payload }): RegisterModelState {
       return {
         ...state,
         svgCaptcha: payload,
@@ -55,4 +51,4 @@ const LoginModel: LoginModelType = {
   },
 };
 
-export default LoginModel;
+export default RegisterModel;
