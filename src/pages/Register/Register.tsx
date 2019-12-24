@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { Dispatch } from 'redux';
@@ -7,7 +7,6 @@ import { FormComponentProps } from 'antd/es/form';
 import { ConnectState } from '@/models/connect';
 import SwitchTab from '@/components/SwitchTab/index.tsx';
 import { IRegisterParams } from '@/services/services';
-import { object } from 'prop-types';
 
 const FormItem = Form.Item;
 
@@ -27,11 +26,6 @@ interface IRegisterProps extends FormComponentProps {
 }
 
 const Register = (props: IRegisterProps) => {
-  // const [errorMessage, setErrorMessage] = useState({
-  //   code: [],
-  //   name: [],
-  //   username: [],
-  // });
   const {
     sid,
     svgCaptcha,
@@ -51,15 +45,12 @@ const Register = (props: IRegisterProps) => {
     wrapperCol: { span: 6, offset: 4 },
   };
 
+  // 页面初次渲染获取验证码
   useEffect(() => {
-    // 页面初次渲染获取验证码
-    getCaptcha();
+    if (!svgCaptcha) {
+      getSvgCaptcha(sid);
+    }
   }, []);
-
-  // 获取验证码
-  const getCaptcha = () => {
-    getSvgCaptcha(sid);
-  };
 
   // 提交注册表单
   const handleSumbit = () => {
@@ -146,7 +137,10 @@ const Register = (props: IRegisterProps) => {
           {getFieldDecorator('code', {
             rules: [{ required: true, message: '请输入验证码' }],
           })(<Input placeholder="请输入验证码" />)}
-          <span onClick={getCaptcha} dangerouslySetInnerHTML={{ __html: svgCaptcha }} />
+          <span
+            onClick={() => getSvgCaptcha(sid)}
+            dangerouslySetInnerHTML={{ __html: svgCaptcha }}
+          />
         </FormItem>
         <Form.Item {...buttonItemLayout}>
           <Button type="primary" onClick={handleSumbit}>
@@ -160,17 +154,15 @@ const Register = (props: IRegisterProps) => {
 
 const WrappedRegister = Form.create()(Register);
 
-const mapStateToProps = ({ global, register }: ConnectState) => {
-  const { sid } = global;
-  const { svgCaptcha } = register;
+const mapStateToProps = ({ global }: ConnectState) => {
+  const { sid, svgCaptcha } = global;
 
   return { sid, svgCaptcha };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    // setSid: (sid: string) => dispatch({ type: 'global/setSid', payload: sid }),
-    getSvgCaptcha: (sid: string) => dispatch({ type: 'register/querySvgCaptcha', payload: sid }),
+    getSvgCaptcha: (sid: string) => dispatch({ type: 'global/querySvgCaptcha', payload: sid }),
     doRegister: (params: IRegisterParams) =>
       dispatch({ type: 'register/createRegister', payload: params }),
   };

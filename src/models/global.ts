@@ -1,8 +1,12 @@
 import { Reducer } from 'redux';
-import { setKeyInCache, getKeyFromCache } from '@/utils/cache';
+import { Effect } from 'dva';
+import { message } from 'antd';
+import { setKeyInCache, getSid } from '@/utils/utils';
+import { fetchCaptchaAsync } from '@/services/global';
 
 export interface GlobalModelState {
-  sid: string | null;
+  sid?: string | null;
+  svgCaptcha?: string;
 }
 
 export interface GlobalModelType {
@@ -10,13 +14,18 @@ export interface GlobalModelType {
   state: GlobalModelState;
   reducers: {
     setSid: Reducer<GlobalModelState>;
+    setSvgCaptcha: Reducer<GlobalModelState>;
+  };
+  effects: {
+    querySvgCaptcha: Effect;
   };
 }
 
 const GlobalModel: GlobalModelType = {
   namespace: 'global',
   state: {
-    sid: getKeyFromCache('sid'), //通用唯一识别码，具有唯一性
+    sid: getSid('sid'), //通用唯一识别码，具有唯一性
+    svgCaptcha: '', //验证码
   },
   reducers: {
     setSid(state, { payload }): GlobalModelState {
@@ -26,6 +35,25 @@ const GlobalModel: GlobalModelType = {
         ...state,
         sid: payload,
       };
+    },
+    setSvgCaptcha(state, { payload }): GlobalModelState {
+      return {
+        ...state,
+        svgCaptcha: payload,
+      };
+    },
+  },
+  effects: {
+    *querySvgCaptcha({ payload }, { call, put }) {
+      const res = yield call(fetchCaptchaAsync, payload);
+      if (200 === res.code) {
+        yield put({
+          type: 'setSvgCaptcha',
+          payload: res.data,
+        });
+      } else {
+        message.error(res.msg);
+      }
     },
   },
 };
