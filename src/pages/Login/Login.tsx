@@ -4,7 +4,6 @@ import router from 'umi/router';
 import { Dispatch } from 'redux';
 import { Form, Input, Button } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
-import uuid from 'uuid/v4';
 import { ConnectState } from '@/models/connect';
 import SwitchTab from '@/components/SwitchTab/index.tsx';
 import { ILoginParams } from '@/services/services';
@@ -14,7 +13,6 @@ const FormItem = Form.Item;
 interface ILoginProps extends FormComponentProps {
   sid: string;
   svgCaptcha: string;
-  setSid: (sid: string) => Promise<void>;
   getSvgCaptcha: (sid: string) => Promise<void>;
   doLogin: (params: ILoginParams) => Promise<void>;
 }
@@ -24,25 +22,15 @@ const Login = (props: ILoginProps) => {
     sid,
     svgCaptcha,
     form: { getFieldDecorator },
-    setSid,
     getSvgCaptcha,
     doLogin,
   } = props;
 
   useEffect(() => {
-    getCaptcha();
-  }, []);
-
-  // 获取验证码
-  const getCaptcha = () => {
-    let newSid = sid;
-    if (!newSid) {
-      newSid = uuid();
-      setSid(newSid);
+    if (!svgCaptcha) {
+      getSvgCaptcha(sid);
     }
-
-    getSvgCaptcha(newSid);
-  };
+  }, []);
 
   const handleSumbit = () => {
     props.form.validateFields((err, values) => {
@@ -89,17 +77,15 @@ const Login = (props: ILoginProps) => {
 
 const WrappedLogin = Form.create()(Login);
 
-const mapStateToProps = ({ global, login }: ConnectState) => {
-  const { sid } = global;
-  const { svgCaptcha } = login;
+const mapStateToProps = ({ global }: ConnectState) => {
+  const { sid, svgCaptcha } = global;
 
   return { sid, svgCaptcha };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    setSid: (sid: string) => dispatch({ type: 'global/setSid', payload: sid }),
-    getSvgCaptcha: (sid: string) => dispatch({ type: 'login/querySvgCaptcha', payload: sid }),
+    getSvgCaptcha: (sid: string) => dispatch({ type: 'global/querySvgCaptcha', payload: sid }),
     doLogin: (params: ILoginParams) => dispatch({ type: 'login/createLogin', payload: params }),
   };
 };

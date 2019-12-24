@@ -16,13 +16,6 @@ const routes = [
         path: '/register',
         name: 'register',
         component: './Register/Register',
-        beforeEnter: (to: any, from: any, next: any) => {
-          if (from.name === 'login') {
-            next();
-          } else {
-            next('/login');
-          }
-        },
       },
       {
         path: '/forget',
