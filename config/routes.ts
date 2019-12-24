@@ -9,10 +9,12 @@ const routes = [
       },
       {
         path: '/login',
+        name: 'login',
         component: './Login/Login',
       },
       {
         path: '/register',
+        name: 'register',
         component: './Register/Register',
       },
       {

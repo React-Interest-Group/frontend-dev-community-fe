@@ -1,50 +1,31 @@
 import { Reducer } from 'redux';
 import { Effect } from 'dva';
 import { message } from 'antd';
-import { fetchCaptchaAsync } from '@/services/global';
+import { createLoginAsync } from '@/services/global';
 
-export interface LoginModelState {
-  svgCaptcha?: string; // 验证码
-}
+export interface LoginModelState {}
 
 export interface LoginModelType {
   namespace: 'login';
   state: LoginModelState;
+  reducers: {};
   effects: {
-    querySvgCaptcha: Effect;
-  };
-  reducers: {
-    setSvgCaptcha: Reducer<LoginModelState>;
+    createLogin: Effect;
   };
 }
 
 const LoginModel: LoginModelType = {
   namespace: 'login',
-  state: {
-    svgCaptcha: '',
-  },
+  state: {},
+  reducers: {},
   effects: {
-    *querySvgCaptcha({ payload }, { call, put }) {
-      const res = yield call(fetchCaptchaAsync, payload);
-
-      console.log('res:', res);
-
-      if (0 === res.code) {
-        yield put({
-          type: 'setSvgCaptcha',
-          payload: res.data,
-        });
+    *createLogin({ payload }, { call, put }) {
+      const res = yield call(createLoginAsync, payload);
+      if (200 === res.code) {
+        message.success('登录成功');
       } else {
         message.error(res.msg);
       }
-    },
-  },
-  reducers: {
-    setSvgCaptcha(state, { payload }): LoginModelState {
-      return {
-        ...state,
-        svgCaptcha: payload,
-      };
     },
   },
 };
